@@ -15,21 +15,8 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USERNAME, pr
         autoIncrement: true,
     },
     username: DataTypes.STRING,
-    order_id: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: 'order',
-            key: 'id'
-        },
-    },
     password: DataTypes.STRING,
-    codeExpiresOn: DataTypes.DATE,
-    create_timestamp: {
-        type: DataTypes.DATE,
-    },
-    update_timestamp: {
-        type: DataTypes.DATE,
-    }
+    codeExpiresOn: DataTypes.DATE
 },{
     tableName: 'user', // Explicitly specify the table name
 });
@@ -49,13 +36,7 @@ const Product = sequelize.define('product', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    description: DataTypes.STRING, 
-    create_timestamp: {
-        type: DataTypes.DATE,
-    },
-    update_timestamp: {
-        type: DataTypes.DATE,
-    }
+    description: DataTypes.STRING
 },{
     tableName: 'product', // Explicitly specify the table name
 });
@@ -68,6 +49,13 @@ const Order = sequelize.define('order', {
         autoIncrement: true
     },
     order_id: DataTypes.UUID,
+    user_id: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: 'user',
+            key: 'id'
+        },
+    },
     product_id: {
         type: DataTypes.INTEGER,
         references: {
@@ -75,11 +63,9 @@ const Order = sequelize.define('order', {
             key: 'id'
         },
     },
-    create_timestamp: {
-        type: DataTypes.DATE,
-    },
-    update_timestamp: {
-        type: DataTypes.DATE,
+    product_quantity: {
+        type: DataTypes.INTEGER,
+        allowNull: false
     }
 },{
     tableName: 'order', // Explicitly specify the table name

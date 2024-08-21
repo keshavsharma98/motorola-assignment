@@ -1,22 +1,18 @@
 const  { Sequelize, DataTypes } = require("sequelize");
 
-// const sequelize = new Sequelize('sqlite::memory:');
-console.log({
-    DB_NAME: process.env.DB_NAME,
-    DB_USERNAME: process.env.DB_USERNAME,
-    DB_PASSWORD: process.env.DB_PASSWORD,
-    DB_HOST: process.env.DB_HOST
-});
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USERNAME, process.env.DB_PASSWORD, {
     host: process.env.DB_HOST,
     dialect: 'postgres',
   });
+
+  sequelize.sync({ alter: true });
 
   const User = sequelize.define('user', {
     id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
+        autoIncrement: true,
     },
     username: DataTypes.STRING,
     order_id: {
@@ -26,12 +22,16 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USERNAME, pr
             key: 'id'
         },
     },
+    password: DataTypes.STRING,
+    codeExpiresOn: DataTypes.DATE,
     create_timestamp: {
         type: DataTypes.DATE,
     },
     update_timestamp: {
         type: DataTypes.DATE,
     }
+},{
+    tableName: 'user', // Explicitly specify the table name
 });
 
 const Product = sequelize.define('product', {
@@ -39,6 +39,7 @@ const Product = sequelize.define('product', {
         type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
+        autoIncrement: true
     },
     name: {
         type: DataTypes.STRING,
@@ -55,6 +56,8 @@ const Product = sequelize.define('product', {
     update_timestamp: {
         type: DataTypes.DATE,
     }
+},{
+    tableName: 'product', // Explicitly specify the table name
 });
 
 const Order = sequelize.define('order', {
@@ -62,6 +65,7 @@ const Order = sequelize.define('order', {
         type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
+        autoIncrement: true
     },
     order_id: DataTypes.UUID,
     product_id: {
@@ -77,6 +81,8 @@ const Order = sequelize.define('order', {
     update_timestamp: {
         type: DataTypes.DATE,
     }
+},{
+    tableName: 'order', // Explicitly specify the table name
 });
 
 
@@ -89,5 +95,5 @@ const connect = async () => {
     }
 }
 
-module.exports = { connect };
+module.exports = {  sequelize, User, Product, Order, connect };
 
